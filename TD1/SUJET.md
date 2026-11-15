@@ -194,6 +194,6 @@ Une flèche de dépendance va de la classe ou interface qui **utilise un type** 
 2. pourquoi une seule ligne a suffi, avec les mots « contrat d’évaluation d’une position » et « interface » ;
 3. quels fichiers changeraient si demain on écrivait une troisième façon d’évaluer.
 
-**Conservez** la feuille de groupe, avec le trajet du coup et le graphe de dépendances : le TD2 repart de là. Chacun doit pouvoir expliquer une flèche, sans soutenance individuelle. Au TD suivant, le code fourni aura un défaut de ce genre, une classe qui connaît ce qu’elle ne devrait pas, et vous le ferez disparaître.
+**Conservez** la feuille de groupe, avec le trajet du coup et le graphe de dépendances : le TD2 repart de là. Chacun doit pouvoir expliquer une flèche, sans soutenance individuelle. Au TD suivant, le code fourni aura un défaut de ce genre, une classe qui dépend de ce qu’elle ne devrait pas, et vous le ferez disparaître.
 
 **Si le temps manque :** une seule partie, le trajet du coup et l’estimation de l’impact avec l’enseignant, puis la ligne de `Main`. Le bilan peut être discuté collectivement ; aucun travail à domicile n’est imposé.

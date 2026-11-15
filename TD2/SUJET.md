@@ -1,4 +1,4 @@
-# TD2 — Une classe qui connaît ce qu’elle ne devrait pas
+# TD2 — Une classe qui dépend de ce qu’elle ne devrait pas
 
 R304 FI — groupes de 3 à 5, les mêmes qu’au TD1. Pas d’IA pendant le TD. Les durées sont indicatives : ce qui n’est pas fini se termine au TD suivant.
 
