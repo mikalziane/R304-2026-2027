@@ -6,7 +6,7 @@ R304 FI — groupes de 3 à 5, les mêmes qu’au TD1. Pas d’IA pendant le TD.
 
 ## Contexte, à lire une fois
 
-Au TD1, vous avez rendu le moteur imbattable en changeant une ligne de `Main`, et une seule : le choix d’un coup, `ChooseBestMoveService`, ne nomme aucun évaluateur. Il ne connaît que le **contrat d’évaluation d’une position**, l’interface `EndgameOracle`, et reçoit l’évaluateur tout fait, par son constructeur.
+Au TD1, vous avez rendu le moteur imbattable en changeant une ligne de `Main`, et une seule : le choix d’un coup, `ChooseBestMoveService`, ne nomme aucun évaluateur. Il ne dépend que du **contrat d’évaluation d’une position**, l’interface `EndgameOracle`, et reçoit l’évaluateur tout fait, par son constructeur.
 
 Aujourd’hui, le code fourni est le même moteur, mais **mal construit** : `ChooseBestMoveService` crée lui-même son évaluateur, avec `new NaiveOracle()`, dans son constructeur. Le programme joue exactement comme au TD1. Pourtant, il viole la règle unique des couches : le choix, dans l’application, nomme une classe d’adaptateur. Vous allez mesurer ce que cela coûte, puis faire disparaître le défaut et prouver qu’il a disparu.
 
@@ -35,13 +35,13 @@ Le changement annoncé est celui du TD1 : évaluer avec `RetrogradeTablebase` au
 1. **Reprenez** le graphe de dépendances du TD1, **ajoutez** la flèche nouvelle en rouge et **barrez** celles qui ont disparu de `Main`. **Sur la feuille :** la déclaration Java qui justifie la flèche nouvelle.
 2. **Estimez** l’impact du changement avec la méthode du TD1, flèches qui arrivent sur ce qui change. **Sur la feuille :** quels fichiers doivent être modifiés ; est-ce encore une ligne de `Main` ?
 3. **Répondez** à cette question : on veut un test qui vérifie que le choix prend le mat le plus rapide, sans lancer la table ni dépendre des trois règles de `NaiveOracle`. Avec ce constructeur, est-ce possible ? **Sur la feuille :** votre réponse et pourquoi.
-4. **Nommez** le défaut en une phrase, avec les mots « responsabilité de choisir un coup » et « responsabilité d’évaluer une position » : qui connaît quoi de trop ?
+4. **Nommez** le défaut en une phrase, avec les mots « responsabilité de choisir un coup » et « responsabilité d’évaluer une position » : qui dépend de quoi, de trop ?
 
 **Faites un point avec l’enseignant** avant de continuer.
 
 ## Étape 3 — Le principe de la solution (15 min)
 
-Le choix ne doit connaître que le **contrat** d’évaluation, jamais une classe qui le tient. L’évaluateur lui est **donné par son constructeur**, tout fait, par celui qui assemble : c’est l’**injection par le constructeur**. Créer, c’est connaître ; recevoir, ce n’est pas connaître.
+Le choix ne doit dépendre que du **contrat** d’évaluation, jamais d’une classe qui le tient. L’évaluateur lui est **donné par son constructeur**, tout fait, par celui qui assemble : c’est l’**injection par le constructeur**. Créer, c’est dépendre ; recevoir, non.
 
 **Actions**
 
@@ -102,7 +102,7 @@ Le refactoring a rendu possible le test de l’étape 2 : un test du choix avec 
 
 **Sur la feuille**, une ligne chacune :
 
-1. le défaut : qui connaissait qui, et pourquoi c’était de trop ;
+1. le défaut : qui dépendait de qui, et pourquoi c’était de trop ;
 2. la solution, avec les mots « contrat d’évaluation d’une position » et « injection par le constructeur » ;
 3. ce que le test avec l’évaluateur factice a permis de vérifier sans adaptateur ;
 4. la ligne de `Main` qui brancherait la table maintenant.
