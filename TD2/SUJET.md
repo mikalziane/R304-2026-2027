@@ -14,14 +14,14 @@ Les séances suivent désormais cinq étapes : le code fourni avec un défaut, l
 
 **Rappel.** Une flèche de **dépendance** va de la classe qui écrit le nom d’un type vers ce type : champ, paramètre, résultat, `new`, `implements`. Un **appel** à l’exécution n’est pas une dépendance : `ChooseBestMoveService` appelait `NaiveOracle` au TD1 sans en dépendre.
 
-## Étape 1 — Le code fourni, et son défaut (10 min)
+## Étape 1 — Le code fourni, et son défaut (15 min)
 
 Tous les chemins sont relatifs à `TD2/src/main/java/org/chesskrk`.
 
 **Actions**
 
 1. **Mettez à jour** votre clone, **Git > Update Project** (`Ctrl+T`), puis **ouvrez** `TD2/pom.xml` comme au TD1 : **File > Open**, **Open as Project**, **This Window**.
-2. **Lancez** `infrastructure/Main.java` et **jouez** deux coups. **Résultat attendu :** le moteur joue comme au TD1, des échecs sans suite.
+2. **Lancez** `infrastructure/Main.java` et **jouez** deux coups. **Résultat attendu :** le moteur joue comme au début du TD1, des échecs sans suite.
 3. **Ouvrez** `application/usecase/ChooseBestMoveService.java` et **lisez** son constructeur et ses imports. **Sur la feuille :** la ligne qui crée l’évaluateur ; le nom de package qui apparaît dans les imports et qui n’y était pas au TD1.
 4. **Ouvrez** `infrastructure/Main.java`, méthode `buildUseCase`. **Sur la feuille :** ce que `Main` ne décide plus.
 5. **Lancez** tous les tests : clic droit sur `src/test/java`, **Run 'All Tests'**. **Résultat attendu :** tout passe sauf deux règles de `CleanArchitectureTest`. **Sur la feuille :** la ligne de code que son message désigne, et la règle qu’il énonce.
@@ -32,7 +32,7 @@ Le changement annoncé est celui du TD1 : évaluer avec `RetrogradeTablebase` au
 
 **Actions**
 
-1. **Reprenez** le graphe de dépendances du TD1 et **ajoutez** la flèche nouvelle, en rouge. **Sur la feuille :** la déclaration Java qui la justifie.
+1. **Reprenez** le graphe de dépendances du TD1, **ajoutez** la flèche nouvelle en rouge et **barrez** celles qui ont disparu de `Main`. **Sur la feuille :** la déclaration Java qui justifie la flèche nouvelle.
 2. **Estimez** l’impact du changement avec la méthode du TD1, flèches qui arrivent sur ce qui change. **Sur la feuille :** quels fichiers doivent être modifiés ; est-ce encore une ligne de `Main` ?
 3. **Répondez** à cette question : on veut un test qui vérifie que le choix prend le mat le plus rapide, sans lancer la table ni dépendre des trois règles de `NaiveOracle`. Avec ce constructeur, est-ce possible ? **Sur la feuille :** votre réponse et pourquoi.
 4. **Nommez** le défaut en une phrase, avec les mots « responsabilité de choisir un coup » et « responsabilité d’évaluer une position » : qui connaît quoi de trop ?
@@ -64,10 +64,10 @@ Un refactoring change la construction du programme sans changer ce qu’il fait 
    ```
 
 2. **Supprimez** l’import de `NaiveOracle`, devenu inutile. **Résultat attendu :** `ChooseBestMoveService.java` ne contient plus le mot `adapter`.
-3. **Corrigez** `Main.buildUseCase`, qui ne compile plus : c’est lui qui crée l’évaluateur et le passe au service.
+3. **Corrigez** `Main.buildUseCase`, qui ne compile plus : c’est lui qui crée l’évaluateur et le passe au service ; **importez** `NaiveOracle` avec `Alt+Entrée`, comme au TD1.
 4. **Relancez** `Main` et **rejouez** deux coups. **Résultat attendu :** le moteur joue comme avant.
 5. **Relancez** tous les tests. **Résultat attendu :** `CleanArchitectureTest` passe.
-6. **Validez** (commit) dans le dépôt du groupe, message « TD2 : injection de l’évaluateur par le constructeur ».
+6. **Validez** (commit) dans votre clone, message « TD2 : injection de l’évaluateur par le constructeur ». Rien à pousser.
 
 **Sur la feuille :** les fichiers modifiés et le nombre de lignes, comparés à votre liste de l’étape 3.
 
@@ -77,7 +77,7 @@ Le refactoring a rendu possible le test de l’étape 2 : un test du choix avec 
 
 **Actions**
 
-1. **Créez** la classe de test `ChooseBestMoveServiceTest` dans `src/test/java/org/chesskrk/application/`, avec cet évaluateur factice : une position mat vaut une défaite immédiate pour le camp au trait, toute autre position vaut nulle.
+1. **Créez** le package `org.chesskrk.application` sous `src/test/java` (clic droit, **New > Package**), puis la classe de test `ChooseBestMoveServiceTest`, avec cet évaluateur factice ; **importez** chaque nom souligné en rouge avec `Alt+Entrée` : une position mat vaut une défaite immédiate pour le camp au trait, toute autre position vaut nulle.
 
    ```java
    static final class EvaluateurFactice implements EndgameOracle {
@@ -93,8 +93,8 @@ Le refactoring a rendu possible le test de l’étape 2 : un test du choix avec 
 
 2. **Écrivez** un test : roi blanc b6, tour h7, roi noir a8, les blancs au trait ; le service construit avec `new EvaluateurFactice()` doit choisir le coup h7–h8, le mat du TD1. Une position s’écrit `Position.of(Square.parse("b6"), Square.parse("h7"), Square.parse("a8"), Color.WHITE)`, un coup `new Move(Square.parse("h7"), Square.parse("h8"))`, et `chooseMove` rend un `Optional<Move>`.
 3. **Lancez** le test. **Résultat attendu :** vert, sans qu’aucune classe du dossier `adapter` soit nommée dans le test.
-4. **Écrivez** un second test, à votre choix : par exemple, un évaluateur factice qui préfère les positions où la tour est encore là, et une position où le roi noir peut la prendre.
-5. **Validez** (commit) et **poussez** (push) sur le dépôt du groupe.
+4. **Écrivez** un second test, à votre choix. Par exemple : un évaluateur factice qui déclare gagnée pour le camp au trait toute position où la tour est encore là ; les noirs au trait, roi noir à côté de la tour : le service doit la prendre.
+5. **Validez** (commit) dans votre clone.
 
 **Sur la feuille :** ce que ce test prouve, et ce qu’il ne prouve pas ; pourquoi il était impossible avant le refactoring.
 
@@ -104,7 +104,7 @@ Le refactoring a rendu possible le test de l’étape 2 : un test du choix avec 
 
 1. le défaut : qui connaissait qui, et pourquoi c’était de trop ;
 2. la solution, avec les mots « contrat d’évaluation d’une position » et « injection par le constructeur » ;
-3. ce que le test par substitution a permis de vérifier sans adaptateur ;
+3. ce que le test avec l’évaluateur factice a permis de vérifier sans adaptateur ;
 4. la ligne de `Main` qui brancherait la table maintenant.
 
 **Conservez** la feuille : au TD3, le défaut sera dans les règles du jeu, et il faudra le remonter dans le domaine.

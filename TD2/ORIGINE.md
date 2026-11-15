@@ -6,4 +6,4 @@ Adaptation R304 du 8 novembre 2026 : deux adaptateurs ajoutés, `adapter.naive.N
 
 Du 6 au 8 novembre 2026, le TD1 a utilisé un exemple de cinq fichiers (`krk.*`), conservé dans l’historique Git.
 
-TD2, 15 novembre 2026 : copie du moteur du TD1 avec un défaut injecté, `ChooseBestMoveService` crée lui-même `new NaiveOracle()` ; les tests qui construisaient le service avec un autre évaluateur ont été retirés ou adaptés.
+TD2, 15 novembre 2026 : copie du moteur du TD1 avec un défaut injecté, `ChooseBestMoveService` crée lui-même `new NaiveOracle()` ; les tests qui construisaient le service ont été retirés (`ChooseBestMoveServiceTest`, deux tests de `ConsoleGameTest`) ou réécrits avec un choix factice (`UciSessionTest`).

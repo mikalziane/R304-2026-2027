@@ -1,11 +1,9 @@
 package org.chesskrk.adapter.console;
 
 import org.chesskrk.application.port.in.ChooseMoveUseCase;
-import org.chesskrk.application.usecase.ChooseBestMoveService;
 import org.chesskrk.domain.Color;
 import org.chesskrk.domain.Move;
 import org.chesskrk.domain.Position;
-import org.chesskrk.domain.Rules;
 import org.chesskrk.domain.Square;
 import org.junit.jupiter.api.Test;
 
@@ -39,19 +37,6 @@ class ConsoleGameTest {
     }
 
     @Test
-    void avecLEvaluateurNaifLaPartieEstNulleAuBoutDeCinquanteCoups() {
-        ChooseMoveUseCase moteur = new ChooseBestMoveService();
-        List<String> sorties = new ArrayList<>();
-        ConsoleGame[] partie = new ConsoleGame[1];
-        partie[0] = new ConsoleGame(moteur, depart(), premierCoupLegal(partie), sorties::add);
-
-        partie[0].play();
-
-        assertTrue(sorties.stream().anyMatch(l -> l.startsWith("Cinquante coups") || l.startsWith("Pat")),
-                String.join("\n", sorties));
-    }
-
-    @Test
     void lEchiquierPlaceLesPiecesSurLeursCases() {
         ConsoleGame partie = new ConsoleGame(p -> Optional.empty(), depart(), () -> "q", s -> { });
         String[] lignes = partie.render().split("\n");
@@ -59,11 +44,4 @@ class ConsoleGameTest {
         assertEquals("5 . . . . k . . . ", lignes[3]);
     }
 
-    /** Une saisie qui joue toujours le premier coup légal du roi noir dans la partie donnée. */
-    private static java.util.function.Supplier<String> premierCoupLegal(ConsoleGame[] partie) {
-        return () -> {
-            Position p = partie[0].position();
-            return Rules.legalMoves(p).get(0).to().algebraic();
-        };
-    }
-}
+    /** Une saisie qui joue toujours le premier coup légal du roi noir dans la partie donnée. */}

@@ -1,7 +1,8 @@
 package org.chesskrk.adapter.uci;
 
 import org.chesskrk.application.port.in.ChooseMoveUseCase;
-import org.chesskrk.application.usecase.ChooseBestMoveService;
+import org.chesskrk.domain.GameStatus;
+import org.chesskrk.domain.Rules;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -17,7 +18,10 @@ class UciSessionTest {
 
     @BeforeEach
     void setUp() {
-        ChooseMoveUseCase useCase = new ChooseBestMoveService();
+        // Un choix factice, sans le service : le premier coup qui mate, sinon rien.
+        ChooseMoveUseCase useCase = p -> Rules.legalMoves(p).stream()
+                .filter(m -> Rules.status(Rules.apply(p, m)) == GameStatus.CHECKMATE)
+                .findFirst();
         session = new UciSession(() -> useCase, out::add);
     }
 
