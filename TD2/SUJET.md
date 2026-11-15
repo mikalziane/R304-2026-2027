@@ -67,7 +67,7 @@ Un refactoring change la construction du programme sans changer ce qu’il fait 
 3. **Corrigez** `Main.buildUseCase`, qui ne compile plus : c’est lui qui crée l’évaluateur et le passe au service ; **importez** `NaiveOracle` avec `Alt+Entrée`, comme au TD1.
 4. **Relancez** `Main` et **rejouez** deux coups. **Résultat attendu :** le moteur joue comme avant.
 5. **Relancez** tous les tests. **Résultat attendu :** `CleanArchitectureTest` passe.
-6. **Validez** (commit) dans votre clone, message « TD2 : injection de l’évaluateur par le constructeur ». Rien à pousser.
+6. **Validez** (commit), message « TD2 : injection de l’évaluateur par le constructeur », et **poussez** (push). Pour l’instant, chacun pousse sur son dépôt personnel, celui des TP ; un groupe peut aussi choisir le dépôt de l’un de vous comme dépôt du groupe, sans empêcher chacun de pousser ses propres essais sur le sien.
 
 **Sur la feuille :** les fichiers modifiés et le nombre de lignes, comparés à votre liste de l’étape 3.
 
@@ -94,7 +94,7 @@ Le refactoring a rendu possible le test de l’étape 2 : un test du choix avec 
 2. **Écrivez** un test : roi blanc b6, tour h7, roi noir a8, les blancs au trait ; le service construit avec `new EvaluateurFactice()` doit choisir le coup h7–h8, le mat du TD1. Une position s’écrit `Position.of(Square.parse("b6"), Square.parse("h7"), Square.parse("a8"), Color.WHITE)`, un coup `new Move(Square.parse("h7"), Square.parse("h8"))`, et `chooseMove` rend un `Optional<Move>`.
 3. **Lancez** le test. **Résultat attendu :** vert, sans qu’aucune classe du dossier `adapter` soit nommée dans le test.
 4. **Écrivez** un second test, à votre choix. Par exemple : un évaluateur factice qui déclare gagnée pour le camp au trait toute position où la tour est encore là ; les noirs au trait, roi noir à côté de la tour : le service doit la prendre.
-5. **Validez** (commit) dans votre clone.
+5. **Validez** (commit) et **poussez** (push), comme à l’étape 4.
 
 **Sur la feuille :** ce que ce test prouve, et ce qu’il ne prouve pas ; pourquoi il était impossible avant le refactoring.
 
