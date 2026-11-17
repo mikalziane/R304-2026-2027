@@ -7,7 +7,7 @@ import org.chesskrk.domain.Position;
 import org.chesskrk.domain.Rules;
 
 /**
- * Évaluateur naïf. Il tient le contrat d’évaluation d’une position avec trois règles de débutant,
+ * Évaluateur naïf. Il implémente l’interface EndgameOracle et ne reconnaît que trois cas simples,
  * du point de vue des noirs au trait : un mat sur l’échiquier est perdu pour eux ; une tour blanche
  * qu’ils peuvent prendre est, croit-il, gagnée pour eux ; un échec est un peu mauvais pour eux.
  * Tout le reste lui paraît nul. Il ne voit jamais plus loin que la position qu’on lui montre.

@@ -15,7 +15,7 @@ import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 
 /**
- * Assemblage : crée les objets concrets et les relie.
+ * Assemble le programme : crée les objets au démarrage et les relie entre eux.
  * Sans argument, une partie en console contre le moteur. Avec l’argument {@code uci}, le protocole UCI
  * pour une interface d’échecs.
  */

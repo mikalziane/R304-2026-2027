@@ -18,7 +18,7 @@ class UciSessionTest {
 
     @BeforeEach
     void setUp() {
-        // Un choix factice, sans le service : le premier coup qui mate, sinon rien.
+        // Un ChooseMoveUseCase factice, sans ChooseBestMoveService : il renvoie le premier coup qui mate, sinon aucun coup.
         ChooseMoveUseCase useCase = p -> Rules.legalMoves(p).stream()
                 .filter(m -> Rules.status(Rules.apply(p, m)) == GameStatus.CHECKMATE)
                 .findFirst();
