@@ -135,7 +135,7 @@ On demande maintenant un second changement : le moteur doit utiliser `Retrograde
 4. **Effacez** le contenu du champ **Program arguments**, puis **relancez** le programme. **Résultat attendu :** le moteur donne de nouveau des échecs inutiles.
 5. **Relancez** tous les tests, puis **validez** (commit) et **poussez** (push).
 
-**Sur la feuille :** les fichiers modifiés, comparés à votre estimation. Dans le code fourni au début du TD, quelle classe aurait dû lire l’argument et créer les deux évaluateurs ?
+**Sur la feuille :** les fichiers modifiés, comparés à votre estimation. Dans le code fourni au début du TD, quelle classe aurait-il fallu modifier pour lire l’argument et créer les deux évaluateurs ?
 
 ## Prolongement 2 — L’évaluateur de votre groupe (35 min)
 
