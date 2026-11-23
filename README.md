@@ -6,7 +6,7 @@ Ce dépôt contient les sujets et les sources de départ. Pour chaque séance, o
 
 - [TP1 Encapsulation et changements](TP1/SUJET.md). Le sujet inclut la prise en main de Git pour les TP.
 - [TD1 Un moteur d’échecs KRK qui joue mal, puis bien](TD1/SUJET.md), pour les FI.
-- [TD2 Une dépendance de trop](TD2/SUJET.md), pour les FI.
+- [TD2 Une dépendance de trop](TD2/SUJET.md), pour les FI. Le [diaporama de la séance](TD2/R304_TD2_Diaporama.pdf) est fourni en PDF.
 
 ## Règle d’usage de l’IA
 
