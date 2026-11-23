@@ -43,5 +43,4 @@ class ConsoleGameTest {
         assertEquals("1 R . . . K . . . ", lignes[7]);
         assertEquals("5 . . . . k . . . ", lignes[3]);
     }
-
-    /** Une saisie qui joue toujours le premier coup légal du roi noir dans la partie donnée. */}
+}
