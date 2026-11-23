@@ -6,13 +6,13 @@ R304 FI — groupes de 3 à 5, les mêmes qu’au TD1. N’utilisez pas d’IA p
 
 ## Contexte, à lire une fois
 
-Au TD1, vous avez rendu le moteur imbattable en changeant une seule ligne de `Main`. Cela a suffi parce que la classe qui choisit le coup, `ChooseBestMoveService`, ne nomme aucun évaluateur. Elle ne dépend que de l’interface `EndgameOracle`, que tous les évaluateurs implémentent. Elle reçoit un évaluateur déjà créé, en paramètre de son constructeur.
+Le code fourni aujourd’hui est une version du moteur d’échecs que vous connaissez. Ce moteur joue mal : il donne des échecs inutiles. Surtout, son code contient une **dépendance nuisible** : dans son constructeur, la classe qui choisit le coup, `ChooseBestMoveService`, crée elle-même son évaluateur, avec `new NaiveOracle()`. Or `ChooseBestMoveService` appartient à la couche application, et `NaiveOracle` à la couche des adaptateurs : la règle des couches n’est pas respectée.
 
-Aujourd’hui, le code fourni est celui du même moteur, mais il est **mal construit** : dans son constructeur, `ChooseBestMoveService` crée lui-même son évaluateur, avec `new NaiveOracle()`. Le programme joue exactement comme au début du TD1. Pourtant, il ne respecte pas la règle des couches : `ChooseBestMoveService`, qui appartient à la couche application, nomme une classe de la couche des adaptateurs. Vous allez voir les inconvénients de ce défaut. Vous le corrigerez ensuite, et vous prouverez qu’il a disparu.
+Vous allez d’abord mesurer ce que cette dépendance coûte. Vous la supprimerez ensuite, et vous prouverez qu’elle a disparu.
 
 Désormais, chaque séance se déroule en cinq étapes : la découverte du code fourni et de son défaut, le diagnostic, le principe de la solution, le refactoring (la modification du code sans changement de comportement), la vérification.
 
-**Rappel.** Une flèche de **dépendance** va de la classe dont le code contient le nom d’un type vers ce type. Ce nom peut être le type d’un champ, d’un paramètre ou d’un résultat ; il peut aussi suivre `new` ou `implements`. Un **appel** à l’exécution n’est pas une dépendance : `ChooseBestMoveService` appelait `NaiveOracle` au TD1 sans en dépendre.
+**Rappel.** Une flèche de **dépendance** va de la classe dont le code contient le nom d’un type vers ce type. Ce nom peut être le type d’un champ, d’un paramètre ou d’un résultat ; il peut aussi suivre `new` ou `implements`. Un **appel** à l’exécution n’est pas une dépendance : une classe peut appeler une méthode d’un objet sans dépendre de la classe de cet objet, si son code ne désigne cet objet que par une interface.
 
 ## Étape 1 — Le code fourni, et son défaut (15 min)
 
@@ -20,20 +20,20 @@ Tous les chemins sont relatifs à `TD2/src/main/java/org/chesskrk`.
 
 **Actions**
 
-1. **Mettez à jour** votre dépôt local avec **Git > Update Project** (`Ctrl+T`), puis **ouvrez** `TD2/pom.xml` comme au TD1 : **File > Open**, puis **Open as Project** et **This Window**.
-2. **Lancez** `infrastructure/Main.java` et **jouez** deux coups. **Résultat attendu :** le moteur joue comme au début du TD1 : il donne des échecs inutiles.
-3. **Ouvrez** `application/usecase/ChooseBestMoveService.java` et **lisez** son constructeur et ses imports. **Sur la feuille :** la ligne qui crée l’évaluateur ; le nom de package qui apparaît dans les imports et qui n’y était pas au TD1.
-4. **Ouvrez** `infrastructure/Main.java` et **lisez** la méthode `buildUseCase`. **Sur la feuille :** ce que `Main` ne décide plus.
+1. **Mettez à jour** votre dépôt local avec **Git > Update Project** (`Ctrl+T`), puis **ouvrez** `TD2/pom.xml` : **File > Open**, puis **Open as Project** et **This Window**.
+2. **Lancez** `infrastructure/Main.java` et **jouez** deux coups. **Résultat attendu :** le moteur répond à chaque coup, et il donne des échecs inutiles.
+3. **Ouvrez** `application/usecase/ChooseBestMoveService.java` et **lisez** son constructeur et ses imports. **Sur la feuille :** la ligne qui crée l’évaluateur ; l’import qui désigne une classe d’une autre couche, et le nom de cette couche.
+4. **Ouvrez** `infrastructure/Main.java` et **lisez** la méthode `buildUseCase`. **Sur la feuille :** quelle classe choisit l’évaluateur que le moteur utilise, `Main` ou `ChooseBestMoveService` ?
 5. **Lancez** tous les tests : faites un clic droit sur le dossier `src/test/java`, puis choisissez **Run 'All Tests'**. **Résultat attendu :** tous les tests réussissent, sauf deux règles de `CleanArchitectureTest`. **Sur la feuille :** pour chacune de ces deux règles, la ligne de code que le message d’erreur désigne, et la règle que ce message énonce.
 
 ## Étape 2 — Le diagnostic (20 min)
 
-Le changement demandé est le même qu’au TD1 : évaluer les positions avec `RetrogradeTablebase` au lieu de `NaiveOracle`.
+Le changement demandé est le suivant : le moteur doit évaluer les positions avec `RetrogradeTablebase`, la table de finales, au lieu de `NaiveOracle`.
 
 **Actions**
 
-1. **Reprenez** le graphe de dépendances du TD1, **ajoutez** en rouge la nouvelle flèche et **barrez** les flèches qui partaient de `Main` et qui n’existent plus. **Sur la feuille :** la déclaration Java qui justifie la nouvelle flèche.
-2. **Estimez** l’impact du changement avec la méthode du TD1 : cherchez les flèches qui arrivent sur ce qui change. **Sur la feuille :** les fichiers à modifier ; dites si une seule ligne de `Main` suffit encore.
+1. **Dessinez** le graphe de dépendances du code fourni, entre ces six types : `Main`, `ConsoleGame`, `ChooseBestMoveService`, `EndgameOracle`, `NaiveOracle` et `RetrogradeTablebase`. Justifiez chaque flèche par une déclaration Java. **Tracez** en rouge la dépendance nuisible. **Sur la feuille :** le graphe, et la déclaration Java qui justifie la flèche rouge.
+2. **Estimez** l’impact du changement demandé : cherchez dans le graphe les flèches qui arrivent sur ce qui change. **Sur la feuille :** les fichiers à modifier.
 3. **Répondez** à la question suivante. On veut écrire un test qui vérifie que `ChooseBestMoveService` choisit le mat le plus rapide. Ce test ne doit ni calculer la table de finales de `RetrogradeTablebase`, ni dépendre des trois cas que `NaiveOracle` reconnaît. Est-ce possible avec le constructeur actuel de `ChooseBestMoveService` ? **Sur la feuille :** votre réponse et sa justification.
 4. **Décrivez** le défaut en une phrase : quelle classe dépend d’une classe dont elle ne devrait pas dépendre ? Employez les expressions « responsabilité de choisir un coup » et « responsabilité d’évaluer une position ».
 
@@ -47,7 +47,7 @@ Le changement demandé est le même qu’au TD1 : évaluer les positions avec `R
 
 1. **Dessinez**, à côté du graphe actuel, le graphe à obtenir. Dans ce graphe, `ChooseBestMoveService` ne pointe plus que vers `EndgameOracle`. Quelle classe pointe alors vers `NaiveOracle` ?
 2. **Listez** les fichiers qu’il faudra modifier pour obtenir ce graphe, et indiquez pour chacun ce qu’il faudra y changer. **Sur la feuille :** cette liste, avec votre estimation du nombre de lignes à modifier dans chaque fichier.
-3. **Vérifiez**, sur le graphe à obtenir, que le changement demandé (remplacer `NaiveOracle` par `RetrogradeTablebase`) ne modifie de nouveau qu’une ligne de `Main`.
+3. **Vérifiez**, sur le graphe à obtenir, que le changement demandé (remplacer `NaiveOracle` par `RetrogradeTablebase`) ne modifie plus qu’une ligne de `Main`.
 
 ## Étape 4 — Le refactoring (25 min)
 
@@ -64,7 +64,7 @@ Un refactoring modifie l’organisation du code sans modifier ce que fait le pro
    ```
 
 2. **Supprimez** l’import de `NaiveOracle`, devenu inutile. **Résultat attendu :** `ChooseBestMoveService.java` ne contient plus le mot `adapter`.
-3. **Corrigez** la méthode `Main.buildUseCase`, qui ne compile plus : c’est maintenant à elle de créer l’évaluateur et de le passer au constructeur de `ChooseBestMoveService`. **Importez** `NaiveOracle` avec `Alt+Entrée`, comme au TD1.
+3. **Corrigez** la méthode `Main.buildUseCase`, qui ne compile plus : c’est maintenant à elle de créer l’évaluateur et de le passer au constructeur de `ChooseBestMoveService`. **Importez** `NaiveOracle` avec `Alt+Entrée`.
 4. **Relancez** `Main` et **rejouez** deux coups. **Résultat attendu :** le moteur joue comme avant.
 5. **Relancez** tous les tests. **Résultat attendu :** tous les tests réussissent, y compris `CleanArchitectureTest`.
 6. **Validez** vos modifications (commit) avec le message « TD2 : injection de l’évaluateur par le constructeur », puis **poussez**-les (push). Pour l’instant, chacun pousse sur son dépôt personnel, celui des TP. Votre groupe peut aussi choisir le dépôt de l’un d’entre vous comme dépôt commun. Chacun reste alors libre de pousser ses propres essais sur son dépôt personnel.
@@ -91,7 +91,7 @@ Grâce au refactoring, le test de l’étape 2 devient possible : on peut tester
    }
    ```
 
-2. **Écrivez** un premier test à partir de la position suivante : roi blanc en b6, tour en h7, roi noir en a8, trait aux blancs. Créez un `ChooseBestMoveService` avec `new EvaluateurFactice()` et vérifiez qu’il choisit le coup h7-h8, qui donne le mat vu au TD1. Une position s’écrit `Position.of(Square.parse("b6"), Square.parse("h7"), Square.parse("a8"), Color.WHITE)`. Un coup s’écrit `new Move(Square.parse("h7"), Square.parse("h8"))`. La méthode `chooseMove` renvoie un `Optional<Move>`.
+2. **Écrivez** un premier test à partir de la position suivante : roi blanc en b6, tour en h7, roi noir en a8, trait aux blancs. Créez un `ChooseBestMoveService` avec `new EvaluateurFactice()` et vérifiez qu’il choisit le coup h7-h8, qui met le roi noir mat. Une position s’écrit `Position.of(Square.parse("b6"), Square.parse("h7"), Square.parse("a8"), Color.WHITE)`. Un coup s’écrit `new Move(Square.parse("h7"), Square.parse("h8"))`. La méthode `chooseMove` renvoie un `Optional<Move>`.
 3. **Lancez** le test. **Résultat attendu :** le test réussit (il s’affiche en vert), et il ne nomme aucune classe du dossier `adapter`.
 4. **Écrivez** un second test de votre choix. Par exemple, écrivez un évaluateur factice pour lequel toute position où la tour est encore sur l’échiquier est gagnée pour le camp au trait. Partez d’une position où les noirs sont au trait et où le roi noir est à côté de la tour. Vérifiez que `ChooseBestMoveService` choisit de prendre la tour.
 5. **Validez** (commit) et **poussez** (push), comme à l’étape 4.
